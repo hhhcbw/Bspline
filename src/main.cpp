@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "bezier.h"
+#include "spline.h"
 #include "shader.h"
 
 #include <iostream>
@@ -24,7 +25,7 @@ glm::vec4 lastPos;
 // dragging id
 unsigned int draggingId = 255;
 
-BezierCurve* bezierCurve;
+BasisCurve* basisCurve;
 
 int main()
 {
@@ -71,12 +72,17 @@ int main()
 
     // construct bezier curve
     vector<glm::vec3> controlPoints;
+    controlPoints.push_back(glm::vec3(-0.6f, -0.7f, 0.0f));
     controlPoints.push_back(glm::vec3(-0.5f, -0.5f, 0.0f));
     controlPoints.push_back(glm::vec3(-0.4f, -0.3f, 0.0f));
-    controlPoints.push_back(glm::vec3(-0.3f, -0.2f, 0.0f));
-    controlPoints.push_back(glm::vec3(0.2f, 0.1f, 0.0f));
+    controlPoints.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
+    controlPoints.push_back(glm::vec3(0.3f, 0.2f, 0.0f));
     controlPoints.push_back(glm::vec3(0.5f, 0.5f, 0.0f));
-    bezierCurve = new BezierCurve(controlPoints);
+    basisCurve = new BasisCurve(controlPoints);
+    //basisCurve = new BezierCurve(controlPoints);
+    //basisCurve = new SplineCurve(controlPoints);
+
+    basisCurve->init();
 
     glPointSize(10.0f);
     float ans;
@@ -129,7 +135,7 @@ int main()
         colorIdShader.use();
 
         // render control points
-        bezierCurve->DrawControlPoints(colorIdShader);
+        basisCurve->DrawControlPoints(colorIdShader);
 
         // 2. Bind back to default framebuffer and draw scene
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -143,9 +149,9 @@ int main()
         //colorIdShader.use();
         colorShader.use();
 
-        // draw bazier curve
-        bezierCurve->Draw(colorShader);
-        //bezierCurve->DrawControlPoints(colorIdShader);
+        // draw curve
+        basisCurve->Draw(colorShader);
+        //basisCurve->DrawControlPoints(colorIdShader);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -182,7 +188,7 @@ void processInput(GLFWwindow* window)
 
         glm::vec4 pos((float)xpos * 2.0f / SCR_WIDTH - 1.0f, 1.0f - (float)ypos * 2.0f / SCR_HEIGHT, lastPos.z, 1.0f);
         glm::vec3 dir3 = glm::vec3(pos.x - lastPos.x, pos.y - lastPos.y, pos.z - lastPos.z);
-        bezierCurve->Update(draggingId, dir3);
+        basisCurve->Update(draggingId, dir3);
 
         lastPos = pos;
     }
