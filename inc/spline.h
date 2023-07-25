@@ -14,8 +14,8 @@ public:
 	SplineCurve() = default;
 
 	// constructor
-	SplineCurve(const vector<glm::vec3>& controlPoints, const float l = 0, const float r = 1, const int count = 100)
-		: BasisCurve(controlPoints, l, r, count)
+	SplineCurve(const vector<glm::vec3>& controlPoints, const int count = 100)
+		: BasisCurve(controlPoints, count)
 	{
 	}
 
@@ -91,20 +91,11 @@ private:
             for (int j = 0; j <= m_count / (size - 1); j++)
             {
                 float ratio = (float)j / (float)(m_count / (size - 1));
-                //m_vertices.push_back(pow3(ratio) * m_M[i] / 6.0f +
-                //                     pow3(1.0f - ratio) * m_M[i + 1] / 6.0f +
-                //                     (m_controlPoints[i] - m_M[i + 1] / 6.0f) * (1.0f - ratio) +
-                //                     (m_controlPoints[i + 1] - m_M[i] / 6.0f) * ratio);
-                //std::cout << (pow3(ratio) * m_M[i+1] / 6.0f).x << std::endl;
-                std::cout << ((m_controlPoints[i + 1] - m_M[i + 1] / 6.0f) * ratio).x << std::endl;
+                //std::cout << ((m_controlPoints[i + 1] - m_M[i + 1] / 6.0f) * ratio).x << std::endl;
                 m_vertices.push_back(pow3((1.0f - ratio)) * m_M[i] / 6.0f +
                                      pow3(ratio) * m_M[i + 1] / 6.0f +
                                      (m_controlPoints[i] - m_M[i] / 6.0f) * (1 - ratio) +
                                      (m_controlPoints[i + 1] - m_M[i + 1] / 6.0f) * ratio);
-                //m_vertices.push_back(pow3((1.0f - ratio)) * m_M[i] / 6.0f / m_upper[i] +
-                //                     pow3(ratio) * m_M[i + 1] / 6.0f / m_upper[i] +
-                //                     (m_controlPoints[i] / m_upper[i] - m_M[i + 1] * m_upper[i] / 6.0f) * ratio +
-                //                     (m_controlPoints[i + 1] / m_upper[i] - m_M[i] * m_upper[i] / 6.0f) * (1 - ratio));
             }
         }
 

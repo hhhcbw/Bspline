@@ -19,8 +19,8 @@ public:
     BasisCurve() = default;
 
     // constructor
-    BasisCurve(const vector<glm::vec3>& controlPoints, const float l = 0, const float r = 1, const int count = 100)
-        : m_l(l), m_r(r), m_count(count)
+    BasisCurve(const vector<glm::vec3>& controlPoints, const int count = 100)
+        : m_count(count)
     {
         for (unsigned int id = 0; id < controlPoints.size(); id++)
         {
@@ -85,7 +85,6 @@ protected:
     vector<glm::vec3> m_controlPoints;
     vector<glm::vec3> m_vertices;
     vector<float> m_controlPointsId;
-    float m_l, m_r;
     unsigned int VAO_controlPoints, VBO_controlPoints, VAO_vertices, VBO_vertices;
     int m_count;
 

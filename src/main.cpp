@@ -6,6 +6,7 @@
 
 #include "bezier.h"
 #include "spline.h"
+#include "bspline.h"
 #include "shader.h"
 
 #include <iostream>
@@ -70,7 +71,7 @@ int main()
     Shader colorShader("colors.vs", "colors.fs");
     Shader colorIdShader("colorsId.vs", "colorsId.fs");
 
-    // construct bezier curve
+    // construct curve
     vector<glm::vec3> controlPoints;
     controlPoints.push_back(glm::vec3(-0.6f, -0.7f, 0.0f));
     controlPoints.push_back(glm::vec3(-0.5f, -0.5f, 0.0f));
@@ -78,9 +79,21 @@ int main()
     controlPoints.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
     controlPoints.push_back(glm::vec3(0.3f, 0.2f, 0.0f));
     controlPoints.push_back(glm::vec3(0.5f, 0.5f, 0.0f));
-    basisCurve = new BasisCurve(controlPoints);
+    vector<float> knots;
+    knots.push_back(0);
+    knots.push_back(0);
+    knots.push_back(0);
+    knots.push_back(0);
+    knots.push_back(0.43);
+    knots.push_back(0.67);
+    knots.push_back(1);
+    knots.push_back(1);
+    knots.push_back(1);
+	knots.push_back(1);
+    //basisCurve = new BasisCurve(controlPoints);
     //basisCurve = new BezierCurve(controlPoints);
     //basisCurve = new SplineCurve(controlPoints);
+    basisCurve = new BsplineCurve(controlPoints, knots);
 
     basisCurve->init();
 

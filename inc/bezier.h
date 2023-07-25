@@ -11,8 +11,8 @@ public:
     BezierCurve() = default;
 
     // constructor
-    BezierCurve(const vector<glm::vec3>& controlPoints, const float l = 0, const float r = 1, const int count = 100)
-        : BasisCurve(controlPoints, l, r, count)
+    BezierCurve(const vector<glm::vec3>& controlPoints, const int count = 100)
+        : BasisCurve(controlPoints, count)
     {
 	}
 
