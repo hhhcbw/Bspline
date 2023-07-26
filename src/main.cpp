@@ -85,13 +85,23 @@ int main()
     knots.push_back(0);
     knots.push_back(0);
     knots.push_back(0.43);
-    knots.push_back(0.67);
+    //knots.push_back(0.67);
+    knots.push_back(0.43); // multiplicity knots
     knots.push_back(1);
     knots.push_back(1);
     knots.push_back(1);
 	knots.push_back(1);
+    vector<glm::vec3> arcCircleControlPoints;
+    arcCircleControlPoints.push_back(glm::vec3(0.5, 0, 0));
+    arcCircleControlPoints.push_back(glm::vec3(0.5, 0.5, 0));
+    arcCircleControlPoints.push_back(glm::vec3(0, 0.5, 0));
+    vector<float> weights;
+    weights.push_back(1);
+    weights.push_back(1);
+    weights.push_back(2);
     //basisCurve = new BasisCurve(controlPoints);
     //basisCurve = new BezierCurve(controlPoints);
+    //basisCurve = new BezierCurve(arcCircleControlPoints, weights);
     //basisCurve = new SplineCurve(controlPoints);
     basisCurve = new BsplineCurve(controlPoints, knots);
 

@@ -10,11 +10,22 @@ public:
     // default constructor
     BezierCurve() = default;
 
-    // constructor
+    // basis bezier curve constructor
     BezierCurve(const vector<glm::vec3>& controlPoints, const int count = 100)
-        : BasisCurve(controlPoints, count)
+        : BasisCurve(controlPoints, count), m_isRational(false)
     {
 	}
+
+    // rational bezier curve constructor
+    BezierCurve(const vector<glm::vec3>& controlPoints, const vector<float>& weights, const int count = 100)
+        : BasisCurve(controlPoints, count), m_isRational(true)
+	{
+        m_weights.assign(weights.begin(), weights.end());
+	}
+
+protected:
+    vector<float> m_weights; // weights of control points
+    bool m_isRational; // rational bezier curve or not
 
 private:
     // create draw vertices according to control points and parameter domain
@@ -34,15 +45,37 @@ private:
     {
         const int size = m_controlPoints.size();
         vector<glm::vec3> temp;
-        for (auto x : m_controlPoints)
+        if (!m_isRational) // non-rational condition
         {
-            temp.push_back(x);
-        }
-        for (int i = 0; i < size; i++)
-            for (int j = 0; j < size - i - 1; j++)
+            for (int i = 0; i < size; i++)
             {
-                temp[j] = (1.0f - u) * temp[j] + u * temp[j + 1];
+                temp.push_back(m_controlPoints[i]);
             }
+
+            for (int i = 0; i < size; i++)
+                for (int j = 0; j < size - i - 1; j++)
+                {
+                    temp[j] = (1.0f - u) * temp[j] + u * temp[j + 1];
+                }
+        }
+		else // rational condition
+		{
+            vector<float> weights(m_weights);
+			for (int i = 0; i < size; i++)
+			{
+				temp.push_back(m_controlPoints[i] * m_weights[i]);
+			}
+
+            for (int i = 0; i < size; i++)
+                for (int j = 0; j < size - i - 1; j++)
+                {
+                    temp[j] = (1.0f - u) * temp[j] + u * temp[j + 1];
+                    weights[j] = (1.0f - u) * weights[j] + u * weights[j + 1];
+                }
+
+            temp[0] /= weights[0];
+		}
+
         m_vertices.push_back(temp[0]);
     }
 };
