@@ -18,9 +18,8 @@ public:
 
     // rational bezier curve constructor
     BezierCurve(const vector<glm::vec3>& controlPoints, const vector<float>& weights, const int count = 100)
-        : BasisCurve(controlPoints, count), m_isRational(true)
+        : BasisCurve(controlPoints, count), m_weights(weights), m_isRational(true)
 	{
-        m_weights.assign(weights.begin(), weights.end());
 	}
 
 protected:

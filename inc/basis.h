@@ -20,13 +20,8 @@ public:
 
     // constructor
     BasisCurve(const vector<glm::vec3>& controlPoints, const int count = 100)
-        : m_count(count)
+        : m_controlPoints(controlPoints), m_count(count)
     {
-        for (unsigned int id = 0; id < controlPoints.size(); id++)
-        {
-            m_controlPointsId.push_back((float)id);
-            m_controlPoints.push_back(controlPoints[id]);
-        }
     }
 
     // initial method
@@ -84,7 +79,6 @@ public:
 protected:
     vector<glm::vec3> m_controlPoints;
     vector<glm::vec3> m_vertices;
-    vector<float> m_controlPointsId;
     unsigned int VAO_controlPoints, VBO_controlPoints, VAO_vertices, VBO_vertices;
     int m_count;
 
@@ -100,20 +94,12 @@ protected:
         // load data into vertex buffers
         glBindBuffer(GL_ARRAY_BUFFER, VBO_controlPoints);
         glBufferData(GL_ARRAY_BUFFER,
-                     m_controlPoints.size() * sizeof(glm::vec3) + m_controlPointsId.size() * sizeof(float),
-                     NULL,
+                     m_controlPoints.size() * sizeof(glm::vec3), 
+                     &m_controlPoints[0],
                      GL_STREAM_DRAW);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, m_controlPoints.size() * sizeof(glm::vec3), &m_controlPoints[0]);
-        glBufferSubData(GL_ARRAY_BUFFER,
-                        m_controlPoints.size() * sizeof(glm::vec3),
-                        m_controlPointsId.size() * sizeof(float),
-                        &m_controlPointsId[0]);
         //  set the vertex attribute pointers
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(
-            1, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)(m_controlPoints.size() * sizeof(glm::vec3)));
-        glEnableVertexAttribArray(1);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);

@@ -18,17 +18,32 @@ public:
      * @param[in]  count          Number of segments
      */
     BsplineCurve(const vector<glm::vec3>& controlPoints, const vector<float>& knots, const int p = 3, const int count = 100)
-        : BasisCurve(controlPoints, count), m_p(p)
+        : BasisCurve(controlPoints, count), m_p(p), m_knots(knots), m_isRational(false)
     {
-        for (auto x : knots)
-		{
-			m_knots.push_back(x);
-		}
+    }
+
+    /**
+     * @brief      NURBS parameter constructor
+     * @param[in]  controlPoints  Control points
+     * @param[in]  knots          Knots array
+     * @param[in]  weights        Weights of control points
+     * @param[in]  p              Degree(decide curve continuity)
+     * @param[in]  count          Number of segments
+     */
+    BsplineCurve(const vector<glm::vec3>& controlPoints,
+                 const vector<float>& knots,
+                 const vector<float>& weights,
+                 const int p = 3, 
+                 const int count = 100)
+        : BasisCurve(controlPoints, count), m_knots(knots), m_weights(weights), m_p(p), m_isRational(true)
+    {
     }
 
 protected:
     int m_p; // degree
     vector<float> m_knots; // knots array
+    vector<float> m_weights; // weights of control points
+    bool m_isRational;       // rational bspline curve or not
 
 private:
     // create draw vertices according to control points and parameter domain
@@ -73,16 +88,30 @@ private:
             }
         }
         glm::vec3 vertex(0.0f);
-        //int count = 0;
-        for (int i = m_p; i >= 0; i--)
-		{
-            if (pos - i >= 0 && pos - i < size)
-            {
-                vertex += m_controlPoints[pos - i] * basis_func[m_p - i];
-                //count++;
-		    }
+        if (!m_isRational) // non-rational condition
+        {
+            for (int i = m_p; i >= 0; i--)
+		    {
+                if (pos - i >= 0 && pos - i < size)
+                {
+                    vertex += m_controlPoints[pos - i] * basis_func[m_p - i];
+		        }
+            }
         }
-        //if (count == m_p + 1)
+        else // rational condition
+        {
+            float w = 0.0f;
+            for (int i = m_p; i >= 0; i--)
+            {
+                if (pos - i >= 0 && pos - i < size)
+                {
+                    vertex += m_controlPoints[pos - i] * m_weights[pos - i] * basis_func[m_p - i];
+                    w += m_weights[pos - i] * basis_func[m_p - i];
+                }
+            }
+            vertex /= w;
+        }
+
         m_vertices.push_back(vertex);
     }
 };
